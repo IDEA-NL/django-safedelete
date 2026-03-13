@@ -110,17 +110,15 @@ class SafeDeleteAdmin(admin.ModelAdmin):
             queryset = queryset.order_by(*ordering)
         return queryset
 
-    def log_undeletion(self, request, obj, object_repr):
+    def log_undeletions(self, request, queryset):
         """
-        Log that an object will be undeleted.
+        Log that some objects will be undeleted.
 
-        The default implementation creates an admin LogEntry object.
+        The default implementation creates admin LogEntry objects.
         """
-        LogEntry.objects.log_action(
+        LogEntry.objects.log_actions(
             user_id=request.user.pk,
-            content_type_id=ContentType.objects.get_for_model(self.model).pk,
-            object_id=obj.pk,
-            object_repr=object_repr,
+            queryset=queryset,
             action_flag=CHANGE
         )
 
@@ -136,9 +134,7 @@ class SafeDeleteAdmin(admin.ModelAdmin):
         if request.POST.get('post'):
             requested = queryset.count()
             if requested:
-                for obj in queryset:
-                    obj_display = force_str(obj)
-                    self.log_undeletion(request, obj, obj_display)
+                self.log_undeletions(request, queryset)
                 changed = queryset.undelete()[0]
                 if changed < requested:
                     self.message_user(

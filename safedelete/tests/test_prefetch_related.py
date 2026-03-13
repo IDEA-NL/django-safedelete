@@ -36,11 +36,8 @@ class PrefetchTestCase(SafeDeleteTestCase):
         brothers = PrefetchBrother.objects.all().prefetch_related(
             'sisters'
         )
-        # assertQuerysetEqual will be removed in Django 5.1
-        assertQuerySetEqual = getattr(self, 'assertQuerySetEqual', self.assertQuerysetEqual)
-
         for brother in brothers:
-            assertQuerySetEqual(
+            self.assertQuerySetEqual(
                 brother.sisters.all().order_by('pk'),
                 [
                     repr(s) for s in PrefetchBrother.objects.get(
