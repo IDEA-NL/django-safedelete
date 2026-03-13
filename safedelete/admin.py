@@ -9,6 +9,7 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import PermissionDenied
 from django.db.models import F
 from django.template.response import TemplateResponse
+from django.utils import formats
 from django.utils.encoding import force_str
 from django.utils.html import conditional_escape, format_html
 from django.utils.translation import gettext_lazy as _
@@ -60,6 +61,19 @@ class SafeDeleteAdminFilter(admin.SimpleListFilter):
         elif self.value() == self.parameter_name + "_only":
             parameter_is_null = False
         return queryset.filter(**{self.parameter_name + '__isnull': parameter_is_null})
+
+
+def _list_display_deleted_field(obj):
+    value = getattr(obj, FIELD_NAME)
+    if not value:
+        return value
+    return format_html(
+        '<span class="deleted-field">{}</span>',
+        formats.localize(value)
+    )
+
+_list_display_deleted_field.__name__ = FIELD_NAME
+_list_display_deleted_field.admin_order_field = FIELD_NAME
 
 
 class SafeDeleteAdmin(admin.ModelAdmin):

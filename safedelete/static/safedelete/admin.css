@@ -1,5 +1,12 @@
 .deleted {
-    color:#ff3e3e;
+    color: var(--error-fg);
     font-weight: normal;
     text-decoration:line-through;
+}
+
+tr:has(.deleted-field) {
+    background-color: var(--message-error-bg);
+    td, th {
+        color: var(--error-fg);
+    }
 }

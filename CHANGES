@@ -6,6 +6,7 @@ CHANGELOG
 ==================
 
 - Support Django 6.0
+- Highlight entire row as red in the Admin when the deleted field is displayed
 
 1.4.1 (2025-03-05)
 ==================
