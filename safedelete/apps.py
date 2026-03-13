@@ -7,4 +7,5 @@ class SafeDeleteConfig(AppConfig):
     verbose_name = 'Safe Delete'
 
     def ready(self):
-        pass
+        # Import checks to ensure they are registered
+        from . import checks

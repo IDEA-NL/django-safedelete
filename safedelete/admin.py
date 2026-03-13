@@ -63,7 +63,7 @@ class SafeDeleteAdminFilter(admin.SimpleListFilter):
         return queryset.filter(**{self.parameter_name + '__isnull': parameter_is_null})
 
 
-def _list_display_deleted_field(obj):
+def list_display_deleted_field(obj):
     value = getattr(obj, FIELD_NAME)
     if not value:
         return value
@@ -72,8 +72,8 @@ def _list_display_deleted_field(obj):
         formats.localize(value)
     )
 
-_list_display_deleted_field.__name__ = FIELD_NAME
-_list_display_deleted_field.admin_order_field = FIELD_NAME
+list_display_deleted_field.__name__ = FIELD_NAME
+list_display_deleted_field.admin_order_field = FIELD_NAME
 
 
 class SafeDeleteAdmin(admin.ModelAdmin):
@@ -94,7 +94,7 @@ class SafeDeleteAdmin(admin.ModelAdmin):
     undelete_selected_confirmation_template = "safedelete/undelete_selected_confirmation.html"
     hard_delete_selected_confirmation_template = "safedelete/hard_delete_selected_confirmation.html"
 
-    list_display = (FIELD_NAME,)
+    list_display = (list_display_deleted_field,)
     list_filter = (FIELD_NAME,)
     actions = ('undelete_selected', 'hard_delete_soft_deleted')
 
